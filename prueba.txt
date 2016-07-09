@@ -1,0 +1,9 @@
+conjunto a, b={2,3}, c;
+a = {1, 5};
+c = a + b;
+b = b + {6, 4};
+imprime b;
+b + 5 + 7 - 2;
+a = b*c;
+b = {};
+elimina b, c;

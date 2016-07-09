@@ -1,0 +1,126 @@
+PARSER_BEGIN(Tarea2)
+class Tarea2 {
+	public static void main(String args[]) throws ParseException {
+		Tarea2 resolucion = new Tarea2(System.in);
+		try {
+			resolucion.inicio();
+			System.out.println("Correcto");
+		}catch(Exception ex) {
+			System.out.println("Error: " + ex);
+		}
+	}
+}
+PARSER_END(Tarea2)
+
+/* Especificación léxica */
+
+SKIP: { " " | "\t" | "\n" | "\r" }
+
+TOKEN:
+{
+	<NUM: (["0"-"9"])+>
+|
+	<CONJUNTO: "conjunto">
+|
+	<IMPRIME: "imprime">
+|
+	<ELIMINA: "elimina">
+|
+	<#letra: ["a"-"z", "A"-"Z"]> 
+|
+	<ID: <letra>(<letra> | <NUM>)*> 
+|
+	<LLAVE_IZQ: "{">
+|
+	<LLAVE_DER: "}">
+|
+	<COMA: ",">
+|
+	<PUNTO_Y_COMA: ";">
+|
+	<ASIGNACION: "=">
+|
+	<OP_MAS: "+">
+|
+	<OP_MENOS: "-">
+|
+	<OP_PRODUCTO: "*">
+}
+
+/* Especificación sintáctica */
+
+void inicio():
+{}
+{
+	listaSentencias() <EOF>
+}
+
+void listaSentencias():
+{}
+{
+	sentencia() <PUNTO_Y_COMA> (listaSentencias())?
+}
+
+void sentencia():
+{}
+{
+	<CONJUNTO> listaVariablesCreadas()
+|
+	<IMPRIME> <ID>
+|
+	<ELIMINA> listaID()
+|
+	<ID> (<ASIGNACION> expresionAAsignar() | operaciones())
+}
+
+void listaVariablesCreadas():
+{}
+{
+	<ID> (<ASIGNACION> conjuntoDetallado())? (<COMA> listaVariablesCreadas())?
+}
+
+void conjuntoDetallado():
+{}
+{
+	<LLAVE_IZQ> (listaNumeros())? <LLAVE_DER>
+}
+
+void listaNumeros():
+{}
+{
+	<NUM> (<COMA> listaNumeros())?
+}
+
+void listaID():
+{}
+{
+	<ID> (<COMA> listaID())?
+}
+
+void expresionAAsignar():
+{}
+{
+	unConjunto() ((<OP_MAS> | <OP_PRODUCTO>) unConjunto())?
+}
+
+void unConjunto():
+{}
+{
+	<ID>
+|
+	conjuntoDetallado()
+}
+
+void operaciones():
+{}
+{
+	operacion() <NUM> (operaciones())?
+}
+
+void operacion():
+{}
+{
+	<OP_MAS>
+|
+	<OP_MENOS>
+}
